@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Bartlomiej's CV</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; }
+        #chat-window { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; margin-bottom: 10px; }
+        #question { width: 80%; padding: 8px; }
+        button { padding: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Chat with Bartlomiej Kletkiewicz's CV</h1>
+    <div id="chat-window">
+        <p><strong>System:</strong> Hi! What would you like to ask about this CV?</p>
+    </div>
+    <form id="chat-form">
+        <input type="text" id="question" placeholder="Ask a question..." required>
+        <button type="submit">Send</button>
+    </form>
+
+    <script>
+        const chatForm = document.getElementById('chat-form');
+        const questionInput = document.getElementById('question');
+        const chatWindow = document.getElementById('chat-window');
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const question = questionInput.value.trim();
+            if (!question) return;
+
+            // Display the user's question
+            chatWindow.innerHTML += `<p><strong>You:</strong> ${question}</p>`;
+            questionInput.value = '';
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+
+            // Display loading message
+            const loadingMsg = document.createElement('p');
+            loadingMsg.innerHTML = "<strong>System:</strong> Thinking...";
+            chatWindow.appendChild(loadingMsg);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+
+            // Send the question to the backend
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question: question })
+            });
+
+            const data = await response.json();
+
+            // Display the system's response
+            loadingMsg.innerHTML = `<strong>System:</strong> ${data.answer}`;
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        });
+    </script>
+</body>
+</html>
