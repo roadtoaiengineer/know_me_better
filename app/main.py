@@ -19,7 +19,7 @@ load_dotenv()
 
 FAISS_INDEX_PATH = "faiss_db"
 
-model_name = "intfloat/multilingual-e5-base"
+model_name = "sentence-transformers/all-MiniLM-L6-v2"
 
 embedding_model = HuggingFaceEmbeddings(
     model_name=model_name,
